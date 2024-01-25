@@ -31,14 +31,22 @@ pub enum Message {
     UserQxChange(String),
     UserAddButton,
     UserUpdateButton,
-    BoxIthChange(String),
-    BoxPoChange(String),
-    BoxSenChange(String),
-    BoxResChange(String),
-    BoxVfChange(String),
-    BoxImChange(String),
-    BoxSeChange(String),
-    BoxIccChange(String),
+    BoxIthMinChange(String),
+    BoxPoMinChange(String),
+    BoxSenMinChange(String),
+    BoxResMinChange(String),
+    BoxVfMinChange(String),
+    BoxImMinChange(String),
+    BoxSeMinChange(String),
+    BoxIccMinChange(String),
+    BoxIthMaxChange(String),
+    BoxPoMaxChange(String),
+    BoxSenMaxChange(String),
+    BoxResMaxChange(String),
+    BoxVfMaxChange(String),
+    BoxImMaxChange(String),
+    BoxSeMaxChange(String),
+    BoxIccMaxChange(String),
 }
 #[derive(Clone, Debug, Default)]
 pub enum View {
@@ -64,14 +72,22 @@ pub struct SettingView {
     pub user_name: String,
     pub user_password: String,
     pub user_qx: String,
-    pub box_ith: String,
-    pub box_po: String,
-    pub box_sen: String,
-    pub box_res: String,
-    pub box_se: String,
-    pub box_icc: String,
-    pub box_vf: String,
-    pub box_im: String,
+    pub box_min_ith: String,
+    pub box_min_po: String,
+    pub box_min_sen: String,
+    pub box_min_res: String,
+    pub box_min_se: String,
+    pub box_min_icc: String,
+    pub box_min_vf: String,
+    pub box_min_im: String,
+    pub box_max_ith: String,
+    pub box_max_po: String,
+    pub box_max_sen: String,
+    pub box_max_res: String,
+    pub box_max_se: String,
+    pub box_max_icc: String,
+    pub box_max_vf: String,
+    pub box_max_im: String,
 }
 
 impl SettingView {
@@ -163,36 +179,68 @@ impl SettingView {
             }
             Message::UserAddButton => todo!(),
             Message::UserUpdateButton => todo!(),
-            Message::BoxIthChange(ith) => {
-                self.box_ith = ith;
+            Message::BoxIthMinChange(ith) => {
+                self.box_min_ith = ith;
                 Command::none()
             },
-            Message::BoxPoChange(po) =>{
-                self.box_po = po;
+            Message::BoxPoMinChange(po) =>{
+                self.box_min_po = po;
                 Command::none()
             },
-            Message::BoxSenChange(sen) => {
-                self.box_sen = sen;
+            Message::BoxSeMinChange(sen) => {
+                self.box_min_sen = sen;
                 Command::none()
             },
-            Message::BoxResChange(res) => {
-                self.box_res = res;
+            Message::BoxResMinChange(res) => {
+                self.box_min_res = res;
                 Command::none()
             },
-            Message::BoxVfChange(vf) => {
-                self.box_vf = vf;
+            Message::BoxVfMinChange(vf) => {
+                self.box_min_vf = vf;
                 Command::none()
             },
-            Message::BoxImChange(im) => {
-                self.box_im = im;
+            Message::BoxImMinChange(im) => {
+                self.box_min_im = im;
                 Command::none()
             },
-            Message::BoxSeChange(se) => {
-                self.box_se = se;
+            Message::BoxIccMinChange(icc) => {
+                self.box_min_icc = icc;
                 Command::none()
             },
-            Message::BoxIccChange(icc) => {
-                self.box_icc = icc;
+            Message::BoxIthMaxChange(ith) => {
+                self.box_max_ith = ith;
+                Command::none()
+            },
+            Message::BoxPoMaxChange(po) =>{
+                self.box_max_po = po;
+                Command::none()
+            },
+            Message::BoxSeMaxChange(sen) => {
+                self.box_max_sen = sen;
+                Command::none()
+            },
+            Message::BoxResMaxChange(res) => {
+                self.box_max_res = res;
+                Command::none()
+            },
+            Message::BoxVfMaxChange(vf) => {
+                self.box_max_vf = vf;
+                Command::none()
+            },
+            Message::BoxImMaxChange(im) => {
+                self.box_max_im = im;
+                Command::none()
+            },
+            Message::BoxIccMaxChange(icc) => {
+                self.box_max_icc = icc;
+                Command::none()
+            },
+            Message::BoxSenMinChange(sen) => {
+                self.box_min_sen = sen;
+                Command::none()
+            },
+            Message::BoxSenMaxChange(sen) => {
+                self.box_max_sen = sen;
                 Command::none()
             },
         }

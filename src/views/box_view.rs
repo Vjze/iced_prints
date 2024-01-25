@@ -1,6 +1,6 @@
 use crate::styles::{
     button_styles::transparent_button_with_rounded_border_theme,
-    colors::red,
+    colors::{green, red},
     container_styles::{first_class_container_rounded_theme, second_class_container_rounded_theme},
     scrollable_styles::ScrollbarStyle,
 };
@@ -36,6 +36,7 @@ pub fn boxview(state: &MyTools) -> Container<'_, Message, Renderer> {
             print_but = print_but.on_press(Message::BoxPrintButton)
         }
     }
+    
     if !state.box_list.is_empty() {
         cance_btn = cance_btn.on_press(Message::BoxCance)
     }
@@ -53,6 +54,7 @@ pub fn boxview(state: &MyTools) -> Container<'_, Message, Renderer> {
     let max_text = text(format!("最大装盒数:{}", state.box_configs.max_num));
     let sn_len_text = text(format!("SN长度:{}", state.box_configs.max_sn));
     let now_num = text(format!("当前扫描数量:{}", state.box_now_num));
+    let yq_text = text("规格：").size(20).style(Text::Color(green()));
     let ith_text = text(format!(
         "ITH:{}-{}",
         state.box_configs.box_min_ith, state.box_configs.box_max_ith
@@ -125,19 +127,15 @@ pub fn boxview(state: &MyTools) -> Container<'_, Message, Renderer> {
         weight: iced::font::Weight::Bold,
         ..Default::default()
     });
+    let row_2 =
+        row!(yq_text, ith_text, po_text, sen_text, res_text, vf_text, im_text, se_text, icc_text,)
+            .align_items(Alignment::Center)
+            .spacing(25);
     let row = row!(
         select_text,
         pn_select,
         max_text,
         sn_len_text,
-        ith_text,
-        po_text,
-        sen_text,
-        res_text,
-        vf_text,
-        im_text,
-        se_text,
-        icc_text,
         Space::new(Length::Fill, Length::Fixed(25.0)),
         now_num
     )
@@ -192,7 +190,9 @@ pub fn boxview(state: &MyTools) -> Container<'_, Message, Renderer> {
         .id(BOX_MESSAGE_LOG.clone());
     let col_1 =
         container(column!(title, list_scrollable)).style(second_class_container_rounded_theme());
-    let cols = column!(first_row, row, col_1).width(Length::Fill);
+    let cols = column!(first_row, row, row_2, col_1)
+        .width(Length::Fill)
+        .align_items(Alignment::Start);
     container(cols)
         .height(Length::Fill)
         .padding(5)

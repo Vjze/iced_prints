@@ -11,7 +11,7 @@ pub fn login(state: &MyTools) -> Container<'static, Message> {
     let overlay = if !state.logined {
         Some(
             Card::new(
-                text("登录"),
+                container(column!(text("登录")).align_items(iced::Alignment::Center)).center_x().width(Length::Fill),
                 column![
                     row![
                         text("账号："),
@@ -38,17 +38,16 @@ pub fn login(state: &MyTools) -> Container<'static, Message> {
                 .padding(5)
                 .width(Length::Fill),
             )
-            .max_width(300.0)
-            //.width(Length::Shrink)
-            .on_close(Message::LoginCence),
+            .max_width(300.0), //.width(Length::Shrink)
+                               // .on_close(Message::LoginCence),
         )
     } else {
         None
     };
     let c = row![];
     let login = modal(c, overlay)
-        .backdrop(Message::CloseModal)
-        .on_esc(Message::CloseModal)
+        // .backdrop(Message::CloseModal)
+        // .on_esc(Message::CloseModal)
         .align_y(alignment::Vertical::Center);
     let login_tip = container(login);
     login_tip.into()

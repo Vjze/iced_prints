@@ -13,8 +13,7 @@ fn main() -> iced::Result {
             position:Position::Centered,
             ..window::Settings::default()
         },
-        
-        default_font: Font::with_name("SimHei"),
+        default_font: Font::with_name("Source Han Sans HW SC"),
         ..Default::default()
     })?;
 

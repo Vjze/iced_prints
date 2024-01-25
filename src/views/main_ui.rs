@@ -91,6 +91,8 @@ pub enum Message {
     CartonCance,
     Lout,
     SettingViewMessage(SettingMessage),
+    FontLoaded(Result<(), iced::font::Error>),
+    RunPrintBack(Result<bool, TipType>),
 }
 
 impl Application for MyTools {
@@ -100,6 +102,9 @@ impl Application for MyTools {
     type Flags = ();
 
     fn new(_flags: ()) -> (Self, Command<Message>) {
+        let font_command = iced::font::load(
+            include_bytes!("../../resources/SourceHanSansHWSC-Regular.otf").as_slice(),
+        );
         (
             Self {
                 // view: Default::default(),
@@ -124,7 +129,10 @@ impl Application for MyTools {
                 setting_view: SettingView::new(),
                 ..Default::default()
             },
-            Command::perform(get_pns(), Message::GetPns),
+            Command::batch([
+                Command::perform(get_pns(), Message::GetPns),
+                font_command.map(Message::FontLoaded),
+            ]),
         )
     }
 
@@ -240,7 +248,7 @@ impl Application for MyTools {
                 self.box_now_num = 0;
                 Command::perform(get_box_configs(pn), Message::GetBoxConfigs)
             }
-            Message::BoxPrintButton => todo!(),
+            Message::BoxPrintButton => Command::perform(run_print(), Message::RunPrintBack),
             Message::BoxAddReback(b) => match b {
                 Ok(res) => {
                     if res.box_po < self.box_configs.box_min_po
@@ -307,10 +315,20 @@ impl Application for MyTools {
 
                         self.box_now_num += 1;
                         self.box_input_value.clear();
-                        scrollable::snap_to(
-                            BOX_MESSAGE_LOG.clone(),
-                            scrollable::RelativeOffset::END,
-                        )
+                        if self.box_now_num == self.box_configs.max_num {
+                            Command::batch([
+                                scrollable::snap_to(
+                                    BOX_MESSAGE_LOG.clone(),
+                                    scrollable::RelativeOffset::END,
+                                ),
+                                Command::perform(run_print(), Message::RunPrintBack),
+                            ])
+                        } else {
+                            scrollable::snap_to(
+                                BOX_MESSAGE_LOG.clone(),
+                                scrollable::RelativeOffset::END,
+                            )
+                        }
                     }
                 }
                 Err(e) => {
@@ -408,6 +426,20 @@ impl Application for MyTools {
                 self.carton_now_num = 0;
                 Command::none()
             }
+            Message::FontLoaded(_) => Command::none(),
+            Message::RunPrintBack(res) => match res {
+                Ok(b) => {
+                    self.box_list.clear();
+                    self.box_now_num = 0;
+                    // self.box_input_value.clear();
+                    Command::none()
+                }
+                Err(e) => {
+                    self.tip_type = e;
+                    self.show_modal = true;
+                    Command::none()
+                }
+            },
         }
     }
     // fn subscription(&self) -> Subscription<Message> {
@@ -518,7 +550,7 @@ async fn get_pns() -> Vec<Pnselect> {
 async fn get_box_configs(pn: String) -> BoxConfigs {
     let configs = if pn == "30300010" {
         BoxConfigs {
-            max_num: 2,
+            max_num: 5,
             max_sn: 1,
             pn,
             box_min_ith: 8.5,
@@ -618,4 +650,8 @@ async fn get_carton_configs(pn: String) -> CartonConfigs {
         CartonConfigs { max_num: 1400, pn }
     };
     configs
+}
+async fn run_print() -> Result<bool, TipType> {
+    println!("done");
+    Ok(true)
 }
